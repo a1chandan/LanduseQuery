@@ -1,5 +1,5 @@
 $(document).ready(async function () {
-  const dataUrl = 'https://github.com/a1chandan/LanduseQuery/blob/main/kolvi.csv'; // Replace with your GitHub data URL
+  const dataUrl = 'https://raw.githubusercontent.com/a1chandan/LanduseQuery/refs/heads/main/kolvi.json'; // Replace with your GitHub data URL
   let table;
   let data = [];
 
