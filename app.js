@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // Fetch the data and initialize the VDC dropdown
   try {
-    const response = await fetch('https://raw.githubusercontent.com/username/repo/main/data.json');
+    const response = await fetch('https://github.com/a1chandan/LanduseQuery/blob/main/kolvi.csv');
     data = await response.json();
 
     // Extract unique VDCs
