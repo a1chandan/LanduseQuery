@@ -6,7 +6,7 @@ document.getElementById('queryForm').addEventListener('submit', async function (
   const parcelId = document.getElementById('parcel_id').value;
 
   try {
-    const response = await fetch('https://raw.githubusercontent.com/username/repo/main/data.json');
+    const response = await fetch('https://github.com/a1chandan/LanduseQuery/blob/main/kolvi.csv');
     const data = await response.json();
 
     const results = data.filter(record => 
