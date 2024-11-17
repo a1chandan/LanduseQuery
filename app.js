@@ -1,3 +1,13 @@
+try {
+  const response = await fetch(dataUrl);
+  if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+  data = await response.json();
+} catch (error) {
+  console.error('Error fetching data:', error);
+  alert(`Failed to load data: ${error.message}`);
+}
+
+
 document.addEventListener('DOMContentLoaded', async function () {
   const vdcDropdown = document.getElementById('vdc');
   const wardDropdown = document.getElementById('ward');
