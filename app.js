@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   // Fetch the data and initialize the VDC dropdown
   try {
-    const response = await fetch('https://drive.google.com/file/d/1SpQ1Dfi9CwiwYBqlGsfQibLuWimM3Vl2/view?usp=sharing');
+    const response = await fetch('https://raw.githubusercontent.com/a1chandan/LanduseQuery/refs/heads/main/kolvi_js.json');
     data = await response.json();
 
     // Extract unique VDCs
