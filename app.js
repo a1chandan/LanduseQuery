@@ -1,68 +1,62 @@
-document.addEventListener('DOMContentLoaded', async function () {
-  const vdcDropdown = document.getElementById('vdc');
-  const wardDropdown = document.getElementById('ward');
-  const form = document.getElementById('queryForm');
-  const resultsContainer = document.getElementById('results');
-
+$(document).ready(async function () {
+  const dataUrl = 'https://raw.githubusercontent.com/username/repo/main/data.json'; // Replace with your GitHub data URL
+  let table;
   let data = [];
 
-  // Fetch the data and initialize the VDC dropdown
   try {
-    const response = await fetch('https://github.com/a1chandan/LanduseQuery/blob/main/kolvi.json');
+    // Fetch the data
+    const response = await fetch(dataUrl);
     data = await response.json();
 
-    // Extract unique VDCs
+    // Initialize DataTable
+    table = $('#recordsTable').DataTable({
+      data: data,
+      columns: [
+        { data: 'vdc' },
+        { data: 'ward' },
+        { data: 'parcel_id' },
+        { data: 'landuse' },
+        { data: 'area' }
+      ],
+      dom: 'lfrtip', // DataTables default layout
+      paging: true,
+      searching: true,
+      responsive: true
+    });
+
+    // Populate VDC dropdown
     const uniqueVDCs = [...new Set(data.map(record => record.vdc))];
     uniqueVDCs.forEach(vdc => {
-      const option = document.createElement('option');
-      option.value = vdc;
-      option.textContent = vdc;
-      vdcDropdown.appendChild(option);
+      $('#vdcFilter').append(`<option value="${vdc}">${vdc}</option>`);
     });
+
+    // Event listener for VDC dropdown
+    $('#vdcFilter').on('change', function () {
+      const selectedVDC = $(this).val();
+
+      // Filter Ward dropdown based on selected VDC
+      $('#wardFilter').empty().append('<option value="">All</option>');
+      if (selectedVDC) {
+        const uniqueWards = [
+          ...new Set(data.filter(record => record.vdc === selectedVDC).map(record => record.ward))
+        ];
+        uniqueWards.forEach(ward => {
+          $('#wardFilter').append(`<option value="${ward}">${ward}</option>`);
+        });
+      }
+
+      // Apply VDC filter to the table
+      table.column(0).search(selectedVDC || '', true, false).draw();
+    });
+
+    // Event listener for Ward dropdown
+    $('#wardFilter').on('change', function () {
+      const selectedWard = $(this).val();
+      table.column(1).search(selectedWard || '', true, false).draw();
+    });
+
   } catch (error) {
     console.error('Error fetching data:', error);
-    resultsContainer.textContent = 'Error fetching data.';
+    alert('Failed to load data. Please check your data source.');
   }
-
-  // Populate the Ward dropdown based on selected VDC
-  vdcDropdown.addEventListener('change', function () {
-    const selectedVDC = vdcDropdown.value;
-
-    // Clear existing wards
-    wardDropdown.innerHTML = '<option value="">Select Ward</option>';
-
-    if (selectedVDC) {
-      // Extract unique wards for the selected VDC
-      const uniqueWards = [
-        ...new Set(data.filter(record => record.vdc === selectedVDC).map(record => record.ward))
-      ];
-      uniqueWards.forEach(ward => {
-        const option = document.createElement('option');
-        option.value = ward;
-        option.textContent = ward;
-        wardDropdown.appendChild(option);
-      });
-    }
-  });
-
-  // Query data on form submission
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const vdc = vdcDropdown.value;
-    const ward = parseInt(wardDropdown.value);
-    const parcelId = document.getElementById('parcel_id').value;
-
-    // Filter records based on the form inputs
-    const results = data.filter(record =>
-      record.vdc === vdc &&
-      record.ward === ward &&
-      record.parcel_id === parcelId
-    );
-
-    // Display results
-    resultsContainer.textContent = results.length
-      ? JSON.stringify(results, null, 2)
-      : 'No records found.';
-  });
 });
