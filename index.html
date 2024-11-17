@@ -3,29 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Land Records Query</title>
+  <title>Land Records Query with DataTables</title>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
-  <h1>Query Land Records</h1>
-  <form id="queryForm">
-    <label for="vdc">VDC:</label>
-    <select id="vdc" name="vdc" required>
-      <option value="">Select VDC</option>
-    </select><br><br>
+  <h1>Land Records Query with DataTables</h1>
 
-    <label for="ward">Ward:</label>
-    <select id="ward" name="ward" required>
-      <option value="">Select Ward</option>
-    </select><br><br>
+  <label for="vdcFilter">VDC:</label>
+  <select id="vdcFilter">
+    <option value="">All</option>
+  </select>
 
-    <label for="parcel_id">Parcel ID:</label>
-    <input type="text" id="parcel_id" name="parcel_id" required><br><br>
+  <label for="wardFilter">Ward:</label>
+  <select id="wardFilter">
+    <option value="">All</option>
+  </select>
 
-    <button type="submit">Query</button>
-  </form>
-
-  <h2>Results:</h2>
-  <pre id="results"></pre>
+  <table id="recordsTable" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>VDC</th>
+        <th>Ward</th>
+        <th>Parcel ID</th>
+        <th>Land Use</th>
+        <th>Area</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script src="app.js"></script>
 </body>
