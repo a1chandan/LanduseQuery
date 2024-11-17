@@ -1,23 +1,68 @@
-document.getElementById('queryForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', async function () {
+  const vdcDropdown = document.getElementById('vdc');
+  const wardDropdown = document.getElementById('ward');
+  const form = document.getElementById('queryForm');
+  const resultsContainer = document.getElementById('results');
 
-  const vdc = document.getElementById('vdc').value;
-  const ward = parseInt(document.getElementById('ward').value);
-  const parcelId = document.getElementById('parcel_id').value;
+  let data = [];
 
+  // Fetch the data and initialize the VDC dropdown
   try {
-    const response = await fetch('https://github.com/a1chandan/LanduseQuery/blob/main/kolvi.csv');
-    const data = await response.json();
+    const response = await fetch('https://raw.githubusercontent.com/username/repo/main/data.json');
+    data = await response.json();
 
-    const results = data.filter(record => 
-      record.vdc === vdc && 
-      record.ward === ward && 
+    // Extract unique VDCs
+    const uniqueVDCs = [...new Set(data.map(record => record.vdc))];
+    uniqueVDCs.forEach(vdc => {
+      const option = document.createElement('option');
+      option.value = vdc;
+      option.textContent = vdc;
+      vdcDropdown.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    resultsContainer.textContent = 'Error fetching data.';
+  }
+
+  // Populate the Ward dropdown based on selected VDC
+  vdcDropdown.addEventListener('change', function () {
+    const selectedVDC = vdcDropdown.value;
+
+    // Clear existing wards
+    wardDropdown.innerHTML = '<option value="">Select Ward</option>';
+
+    if (selectedVDC) {
+      // Extract unique wards for the selected VDC
+      const uniqueWards = [
+        ...new Set(data.filter(record => record.vdc === selectedVDC).map(record => record.ward))
+      ];
+      uniqueWards.forEach(ward => {
+        const option = document.createElement('option');
+        option.value = ward;
+        option.textContent = ward;
+        wardDropdown.appendChild(option);
+      });
+    }
+  });
+
+  // Query data on form submission
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const vdc = vdcDropdown.value;
+    const ward = parseInt(wardDropdown.value);
+    const parcelId = document.getElementById('parcel_id').value;
+
+    // Filter records based on the form inputs
+    const results = data.filter(record =>
+      record.vdc === vdc &&
+      record.ward === ward &&
       record.parcel_id === parcelId
     );
 
-    document.getElementById('results').textContent = JSON.stringify(results, null, 2);
-  } catch (error) {
-    console.error('Error fetching or processing data:', error);
-    document.getElementById('results').textContent = 'Error fetching or processing data.';
-  }
+    // Display results
+    resultsContainer.textContent = results.length
+      ? JSON.stringify(results, null, 2)
+      : 'No records found.';
+  });
 });
