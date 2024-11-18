@@ -20,7 +20,7 @@ async function fetchCSVData() {
     const text = await response.text();
     return text.split("\n").slice(1).map(row => {
         const [vdc, ward, parcel_id, landuse, area] = row.split(",");
-        return { vdc, ward, parcel_id, landuse, area };
+        return { vdc, ward, parcel_id, landuse, area: parseFloat(area).toFixed(2) };
     });
 }
 
@@ -81,11 +81,9 @@ function displayResults(results) {
     table.innerHTML = `
         <thead>
             <tr>
-                <th>VDC</th>
-                <th>Ward</th>
                 <th>Parcel ID</th>
                 <th>Land Use</th>
-                <th>Area</th>
+                <th>Area (sq. m)</th>
             </tr>
         </thead>
     `;
@@ -93,7 +91,11 @@ function displayResults(results) {
     const tbody = document.createElement("tbody");
     results.forEach(row => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${row.vdc}</td><td>${row.ward}</td><td>${row.parcel_id}</td><td>${row.landuse}</td><td>${row.area}</td>`;
+        tr.innerHTML = `
+            <td>${row.parcel_id}</td>
+            <td>${row.landuse}</td>
+            <td>${parseFloat(row.area).toFixed(2)}</td>
+        `;
         tbody.appendChild(tr);
     });
     table.appendChild(tbody);
