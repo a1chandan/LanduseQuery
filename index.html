@@ -28,4 +28,18 @@
             <input type="text" id="parcel" class="form-control mb-3" placeholder="Enter Parcel ID">
 
             <!-- Query Button -->
-            <button class="btn
+            <button id="searchBtn" class="btn btn-primary w-100 mt-3" onclick="queryData()">Search</button>
+
+            <!-- Progress Bar -->
+            <div class="progress mt-3" style="display: none;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="mt-5"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
