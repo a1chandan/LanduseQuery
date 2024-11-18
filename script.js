@@ -1,15 +1,6 @@
 const csvUrl = "https://raw.githubusercontent.com/yourusername/yourrepository/main/yourdata.csv";
 let csvData = [];
 
-// Land use emoji mapping
-const landUseEmojis = {
-    "कृषि क्षेत्र": "🌾🌾🐄🌱",
-    "आवासीय क्षेत्र": "🏠🏡🏘",
-    "नदी, खोला, ताल, सीमसार क्षेत्र": "🏞 🌊🐋",
-    "सार्वजनिक उपयोगको क्षेत्र": "👥⛲🏟",
-    "वन क्षेत्र": "🐒🌲🌳🦌"
-};
-
 // Fetch CSV data on page load
 document.addEventListener("DOMContentLoaded", async () => {
     showProgress(true);
@@ -75,7 +66,7 @@ function queryData() {
     displayResults(results);
 }
 
-// Display the filtered results with emojis
+// Display the filtered results
 function displayResults(results) {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
@@ -99,11 +90,10 @@ function displayResults(results) {
 
     const tbody = document.createElement("tbody");
     results.forEach(row => {
-        const landUseWithEmojis = `${landUseEmojis[row.landuse] || ""} ${row.landuse}`;
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${row.parcel_id}</td>
-            <td>${landUseWithEmojis}</td>
+            <td>${row.landuse}</td>
             <td>${parseFloat(row.area).toFixed(2)}</td>
         `;
         tbody.appendChild(tr);
