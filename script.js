@@ -1,5 +1,14 @@
-const csvUrl = "https://raw.githubusercontent.com/a1chandan/LanduseQuery/refs/heads/main/kolvi_v2.csv";
+const csvUrl = "https://raw.githubusercontent.com/yourusername/yourrepository/main/yourdata.csv";
 let csvData = [];
+
+// Land use emoji mapping
+const landUseEmojis = {
+    "कृषि क्षेत्र": "🌾🌾🐄🌱",
+    "आवासीय क्षेत्र": "🏠🏡🏘",
+    "नदी, खोला, ताल, सीमसार क्षेत्र": "🏞 🌊🐋",
+    "सार्वजनिक उपयोगको क्षेत्र": "👥⛲🏟",
+    "वन क्षेत्र": "🐒🌲🌳🦌"
+};
 
 // Fetch CSV data on page load
 document.addEventListener("DOMContentLoaded", async () => {
@@ -66,7 +75,7 @@ function queryData() {
     displayResults(results);
 }
 
-// Display the filtered results
+// Display the filtered results with emojis
 function displayResults(results) {
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
@@ -81,19 +90,20 @@ function displayResults(results) {
     table.innerHTML = `
         <thead>
             <tr>
-                <th>कित्ता नं</th>
-                <th>भू-उपयोग क्षेत्र</th>
-                <th>क्षेत्रफल(व.मि.)</th>
+                <th>Parcel ID</th>
+                <th>Land Use</th>
+                <th>Area (sq. m)</th>
             </tr>
         </thead>
     `;
 
     const tbody = document.createElement("tbody");
     results.forEach(row => {
+        const landUseWithEmojis = `${landUseEmojis[row.landuse] || ""} ${row.landuse}`;
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td>${row.parcel_id}</td>
-            <td>${row.landuse}</td>
+            <td>${landUseWithEmojis}</td>
             <td>${parseFloat(row.area).toFixed(2)}</td>
         `;
         tbody.appendChild(tr);
