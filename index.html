@@ -1,32 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Land Records Query</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Land Use Query</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <h1>Query Land Records</h1>
-  <form id="queryForm">
-    <label for="vdc">VDC:</label>
-    <select id="vdc" name="vdc" required>
-      <option value="">Select VDC</option>
-    </select><br><br>
+    <div class="container">
+        <h1 class="title">Land Use Query</h1>
 
-    <label for="ward">Ward:</label>
-    <select id="ward" name="ward" required>
-      <option value="">Select Ward</option>
-    </select><br><br>
+        <form id="landUseForm">
+            <div class="form-group">
+                <label for="vdc">VDC</label>
+                <select id="vdc" class="dropdown" onchange="updateWards()">
+                    <option value="">Select VDC</option>
+                    <!-- Options will be dynamically populated -->
+                </select>
+            </div>
 
-    <label for="parcel_id">Parcel ID:</label>
-    <input type="text" id="parcel_id" name="parcel_id" required><br><br>
+            <div class="form-group">
+                <label for="ward">Ward</label>
+                <select id="ward" class="dropdown" disabled>
+                    <option value="">Select Ward</option>
+                    <!-- Options will be dynamically populated based on VDC selection -->
+                </select>
+            </div>
 
-    <button type="submit">Query</button>
-  </form>
+            <div class="form-group">
+                <label for="parcel_id">Parcel ID</label>
+                <input type="text" id="parcel_id" class="input-field" placeholder="Enter Parcel ID" />
+            </div>
 
-  <h2>Results:</h2>
-  <pre id="results"></pre>
+            <div class="form-group">
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </form>
+    </div>
 
-  <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
