@@ -81,9 +81,9 @@ function displayResults(results) {
     table.innerHTML = `
         <thead>
             <tr>
-                <th>Parcel ID</th>
-                <th>Land Use</th>
-                <th>Area (sq. m)</th>
+                <th>कित्ता नं</th>
+                <th>भू-उपयोग क्षेत्र</th>
+                <th>क्षेत्रफल(व.मि.)</th>
             </tr>
         </thead>
     `;
