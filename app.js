@@ -1,78 +1,101 @@
-try {
-  const response = await fetch(dataUrl);
-  if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-  data = await response.json();
-} catch (error) {
-  console.error('Error fetching data:', error);
-  alert(`Failed to load data: ${error.message}`);
+const csvUrl = "https://raw.githubusercontent.com/yourusername/yourrepository/main/yourdata.csv";
+let csvData = [];
+
+// Fetch CSV data on page load
+document.addEventListener("DOMContentLoaded", async () => {
+    showProgress(true);
+    csvData = await fetchCSVData();
+    populateVdcDropdown();
+    showProgress(false);
+});
+
+// Show/Hide progress bar
+function showProgress(show) {
+    document.querySelector('.progress').style.display = show ? 'block' : 'none';
 }
 
-
-document.addEventListener('DOMContentLoaded', async function () {
-  const vdcDropdown = document.getElementById('vdc');
-  const wardDropdown = document.getElementById('ward');
-  const form = document.getElementById('queryForm');
-  const resultsContainer = document.getElementById('results');
-
-  let data = [];
-
-  // Fetch the data and initialize the VDC dropdown
-  try {
-    const response = await fetch('https://raw.githubusercontent.com/a1chandan/LanduseQuery/refs/heads/main/kolvi_js.json');
-    data = await response.json();
-
-    // Extract unique VDCs
-    const uniqueVDCs = [...new Set(data.map(record => record.vdc))];
-    uniqueVDCs.forEach(vdc => {
-      const option = document.createElement('option');
-      option.value = vdc;
-      option.textContent = vdc;
-      vdcDropdown.appendChild(option);
+// Fetch and parse CSV data
+async function fetchCSVData() {
+    const response = await fetch(csvUrl);
+    const text = await response.text();
+    return text.split("\n").slice(1).map(row => {
+        const [vdc, ward, parcel_id, landuse, area] = row.split(",");
+        return { vdc, ward, parcel_id, landuse, area };
     });
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    resultsContainer.textContent = 'Error fetching data.';
-  }
+}
 
-  // Populate the Ward dropdown based on selected VDC
-  vdcDropdown.addEventListener('change', function () {
-    const selectedVDC = vdcDropdown.value;
+// Populate VDC dropdown
+function populateVdcDropdown() {
+    const vdcDropdown = document.getElementById("vdc");
+    const vdcOptions = [...new Set(csvData.map(item => item.vdc))].sort();
+    vdcOptions.forEach(vdc => {
+        const option = document.createElement("option");
+        option.value = vdc;
+        option.textContent = vdc;
+        vdcDropdown.appendChild(option);
+    });
+}
 
-    // Clear existing wards
-    wardDropdown.innerHTML = '<option value="">Select Ward</option>';
-
-    if (selectedVDC) {
-      // Extract unique wards for the selected VDC
-      const uniqueWards = [
-        ...new Set(data.filter(record => record.vdc === selectedVDC).map(record => record.ward))
-      ];
-      uniqueWards.forEach(ward => {
-        const option = document.createElement('option');
-        option.value = ward;
-        option.textContent = ward;
-        wardDropdown.appendChild(option);
-      });
+// Populate Ward dropdown based on VDC selection
+function populateWards() {
+    const selectedVdc = document.getElementById("vdc").value;
+    const wardDropdown = document.getElementById("ward");
+    wardDropdown.innerHTML = '<option value="">-- Select Ward --</option>';
+    if (selectedVdc) {
+        const wards = [...new Set(csvData.filter(item => item.vdc === selectedVdc).map(item => item.ward))].sort();
+        wards.forEach(ward => {
+            const option = document.createElement("option");
+            option.value = ward;
+            option.textContent = ward;
+            wardDropdown.appendChild(option);
+        });
     }
-  });
+}
 
-  // Query data on form submission
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
+// Query the CSV data based on user inputs
+function queryData() {
+    const vdc = document.getElementById("vdc").value;
+    const ward = document.getElementById("ward").value;
+    const parcelId = document.getElementById("parcel").value.trim();
+    let results = csvData;
 
-    const vdc = vdcDropdown.value;
-    const ward = parseInt(wardDropdown.value);
-    const parcelId = document.getElementById('parcel_id').value;
+    if (vdc) results = results.filter(item => item.vdc === vdc);
+    if (ward) results = results.filter(item => item.ward === ward);
+    if (parcelId) results = results.filter(item => item.parcel_id === parcelId);
 
-    // Filter records based on the form inputs
-    const results = data.filter(record =>
-      record.vdc === vdc &&
-      record.ward === ward &&
-      record.parcel_id === parcelId
-    );
+    displayResults(results);
+}
 
-    // Display results
-    resultsContainer.textContent = results.length
-      ? JSON.stringify(results, null, 2)
-      : 'No records found.';
-  });
-});
+// Display the filtered results
+function displayResults(results) {
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (results.length === 0) {
+        resultsDiv.innerHTML = "<p>No results found.</p>";
+        return;
+    }
+
+    const table = document.createElement("table");
+    table.className = "table table-bordered table-striped";
+    table.innerHTML = `
+        <thead>
+            <tr>
+                <th>VDC</th>
+                <th>Ward</th>
+                <th>Parcel ID</th>
+                <th>Land Use</th>
+                <th>Area</th>
+            </tr>
+        </thead>
+    `;
+
+    const tbody = document.createElement("tbody");
+    results.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${row.vdc}</td><td>${row.ward}</td><td>${row.parcel_id}</td><td>${row.landuse}</td><td>${row.area}</td>`;
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    resultsDiv.appendChild(table);
+}
