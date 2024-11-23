@@ -81,9 +81,9 @@ function displayResults(results) {
     table.innerHTML = `
         <thead>
             <tr>
-                <th>Parcel ID</th>
-                <th>Land Use</th>
-                <th>Area (sq. m)</th>
+                <th>कित्ता नं</th>
+                <th>भू-उपयोग क्षेत्र</th>
+                <th> क्षेत्रफल(ज.वि.)</th>
             </tr>
         </thead>
     `;
@@ -94,7 +94,7 @@ function displayResults(results) {
         tr.innerHTML = `
             <td>${row.parcel_id}</td>
             <td>${row.landuse}</td>
-            <td>${parseFloat(row.area).toFixed(2)}</td>
+            <td>${row.area}</td>
         `;
         tbody.appendChild(tr);
     });
