@@ -20,7 +20,7 @@ async function fetchCSVData() {
     const text = await response.text();
     return text.split("\n").slice(1).map(row => {
         const [vdc, ward, parcel_id, landuse, area] = row.split(",");
-        return { vdc, ward, parcel_id, landuse, area: parseFloat(area).toFixed(2) };
+        return { vdc, ward, parcel_id, landuse, area };
     });
 }
 
