@@ -1,4 +1,4 @@
-const csvUrl = "https://raw.githubusercontent.com/a1chandan/LanduseQuery/refs/heads/main/kolvi_v4.csv";
+const csvUrl = "https://raw.githubusercontent.com/a1chandan/LanduseQuery/refs/heads/main/kolvi_v1x.csv";
 let csvData = [];
 
 // Fetch CSV data on page load
